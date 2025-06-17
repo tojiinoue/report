@@ -1,0 +1,27 @@
+<!-- accounts/templates/registration/login.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ログイン</title>
+</head>
+<body>
+  <h2>ログイン</h2>
+  
+  {% if form.errors %}
+    <p>ユーザー名とパスワードが一致しません。もう一度お試しください。</p>
+  {% endif %}
+  
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+    <button type="submit">ログイン</button>
+    <input type="hidden" name="next" value="{{ next }}">
+  </form>
+
+  <p><a href="{% url 'password_reset' %}">パスワードをお忘れですか？</a></p>
+</body>
+</html>

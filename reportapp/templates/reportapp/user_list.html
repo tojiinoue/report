@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 style="padding-top: 15px;">ユーザー一覧</h2>
+<ul>
+  {% for user in user_list %}
+    <li><h3><a href="{% url 'reportapp:user_report_list' user.pk %}">{{ user.username }}</a></h3></li>
+  {% endfor %}
+</ul>
+<a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">日報一覧</a>
+{% endblock %}

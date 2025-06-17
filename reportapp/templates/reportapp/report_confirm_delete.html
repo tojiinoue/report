@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1 style="padding-top: 15px;">日報削除ページ</h1>
+    <div class="row">
+        <section class="post-form">
+            <div class="col-md-12 mb-2">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ report.data }} - {{ report.author }}</h5>
+                        <p><strong>業務内容：</strong>{{ report.content|linebreaksbr }}</p>
+                        <p><strong>振り返り：</strong>{{ report.comment|linebreaksbr }}</p>
+                        <p><strong>いいね数：</strong>{{ report.likes.count }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <form action="" method="post">{% csrf_token %}
+            <button type="submit" class="submit delete btn btn-outline-danger mb-2">削除</button>
+        </form>
+    </div>
+    </section>
+    <a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">一覧に戻る</a>
+</div>
+{% endblock %}

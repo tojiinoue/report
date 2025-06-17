@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} {{ object|yesno:'Edit,Add New' }} Post{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 style="padding-top: 15px;">日報{{ object|yesno:'更新,登録'}}</h1>
+    <div class="form">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_content" class="form-label"><h3><strong>業務内容</strong></h3></label>
+                <textarea name="content" cols="40" rows="2" class="form-control" id="id_content">{{ form.content.value|default_if_none:'' }}</textarea>
+                {% if form.content.errors %}
+                    <div class="text-danger">
+                    {% for error in form.content.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+                <label for="id_content" class="form-label"><h3><strong>振り返り</strong></h3></label>
+                <textarea name="comment" cols="40" rows="5" class="form-control" id="id_comment">{{ form.comment.value|default_if_none:'' }}</textarea>
+                {% if form.comment.errors %}
+                    <div class="text-danger">
+                    {% for error in form.comment.errors %}
+                        {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-outline-success mb-3">{{ object|yesno:'更新,作成' }}</button>
+        </form>
+    </div>
+    <section>
+        <a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">一覧に戻る</a>
+    </section>
+</div>
+{% endblock %}

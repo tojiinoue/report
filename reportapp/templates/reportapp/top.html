@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container"></div>
+    <h1 class="my-4">日報アプリへようこそ！</h1>
+    <h2><a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">日報一覧ページへ</a></h2>
+    <h2><a href="{% url 'reportapp:report_create' %}" class="btn btn-outline-success">日報作成ページへ</a></h2>
+</div>
+{% endblock %}

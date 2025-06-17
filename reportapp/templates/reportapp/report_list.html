@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container"></div>
+    <h1 class="my-4">日報一覧</h1>
+
+    <form method="get" class="mb-4">
+        <div class="d-flex flex-wrap align-items-end gap-2">
+            <div>
+                投稿日：
+                {{ form.data }}
+            </div>
+    
+            <div>
+                投稿者：
+                {{ form.author }}
+            </div>
+
+            <div>
+                <select name="order" class="form-select">
+                    <option value="">作成日順</option>
+                    <option value="new">新規日報順</option>
+                    <option value="like">いいね順</option>
+                </select>
+            </div>
+    
+            <div>
+                <button type="submit" class="btn btn-outline-primary">検索</button>
+            </div>
+        </div>
+    </form>    
+
+    <div class="row">
+    {% for report in report_list %}
+    <div class="col-md-12 mb-4">
+        <div class="card shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">{{ report.data }} - {{ report.author.username }}</h5>
+
+            <p><strong>業務内容：</strong> {{ report.content|linebreaksbr }}</p>
+            <p><strong>振り返り：</strong> {{ report.comment|linebreaksbr }}</p>
+
+            <p><strong>合計：</strong><span id="like-count-{{ report.pk }}">{{ report.likes.count }}</span>いいね</p>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn like-button 
+                {% if user in report.likes.all %}
+                    btn-outline-danger
+                {% else %}
+                    btn-outline-primary
+                {% endif %}"
+                data-report-id="{{ report.pk }}">
+                
+                {% if user in report.likes.all %}
+                    👍取消
+                {% else %}
+                    👍
+                {% endif %}
+            </button>
+
+            <a href="{% url 'reportapp:report_detail' report.pk %}" class="btn btn-outline-info text-black">詳細</a>
+            <a href="{% url 'reportapp:report_comment' report.pk %}" class="btn btn-outline-info text-black">コメント追加</a>
+
+            {% if user == report.author or user.is_superuser %}
+                <a href="{% url 'reportapp:report_update' report.pk %}" class="btn btn-outline-info text-black">編集</a>
+                <a href="{% url 'reportapp:report_delete' report.pk %}" class="btn btn-outline-danger text-black">削除</a>
+            {% endif %}
+            </div>
+
+        </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>まだ投稿がありません</p>
+    {% endfor %}
+    <script>
+        // --- CSRFトークンを取得 ---
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        
+        // --- いいねボタンのクリックイベント ---
+        document.querySelectorAll('.like-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const reportId = this.dataset.reportId;  // ← ここでボタンのIDを取得
+        
+                fetch(`/reportapp/like/${reportId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // いいね数を更新する部分
+                    const likeCountElement = document.querySelector(`#like-count-${reportId}`);
+                    if (likeCountElement) {
+                        likeCountElement.innerText = data.like_count;
+                    }
+        
+                    // ボタンの見た目を更新
+                    if (data.liked) {
+                        this.classList.remove('btn-outline-primary');
+                        this.classList.add('btn-outline-danger');
+                        this.innerText = '👍取消';
+                    } else {
+                        this.classList.remove('btn-outline-danger');
+                        this.classList.add('btn-outline-primary');
+                        this.innerText = '👍';
+                    }
+                });
+            });
+        });
+        </script>
+    </div>
+</div>
+{% endblock %}

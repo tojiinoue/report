@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1 style="padding-top: 15px;">日報詳細</h1>
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ object.data }} - {{ object.author }}</h5>
+                    <p><strong>業務内容：</strong>{{ object.content|linebreaksbr }}</p>
+                    <p><strong>振り返り：</strong>{{ object.comment|linebreaksbr }}</p>
+                    <p><strong>いいね数：</strong>{{ object.likes.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>コメント一覧</h2>
+    {% if object.comments.all %}
+        {% for comment in object.comments.all %}
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ comment.created_at }} - {{ comment.author }}</h5>
+                            <p><strong>コメント：</strong>{{ comment.content|linebreaksbr }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>コメントはまだありません。</p>
+    {% endif %}
+
+    <a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">日報一覧</a>
+    <a href="{% url 'reportapp:report_comment' report.pk %}" class="btn btn-outline-info text-black">コメント追加</a>
+</div>
+{% endblock %}

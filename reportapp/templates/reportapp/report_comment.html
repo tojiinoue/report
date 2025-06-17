@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h3 style="padding-top: 15px;">日報</h3>
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ report.data }} - {{ report.author }}</h5>
+                    <p><strong>業務内容：</strong>{{ report.content|linebreaksbr }}</p>
+                    <p><strong>振り返り：</strong>{{ report.comment|linebreaksbr }}</p>
+                    <p><strong>いいね数：</strong>{{ report.likes.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_content" class="form-label"><h3><strong>コメント入力欄</strong></h3></label>
+            <textarea name="content" cols="40" rows="5" class="form-control" id="id_content">{{ form.content.value|default_if_none:'' }}</textarea>
+            {% if form.content.errors %}
+                <div class="text-danger">
+                {% for error in form.content.errors %}
+                    {{ error }}
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-outline-success mb-3">追加</button>
+    </form>
+    <a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">日報一覧</a>
+    <a href="{% url 'reportapp:report_detail' report.pk %}" class="btn btn-outline-primary">日報詳細</a>
+</div>
+{% endblock %}

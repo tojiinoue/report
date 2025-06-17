@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 style="padding-top: 15px;">{{ user_obj.username }} さんの日報一覧</h2>
+<div class="row">
+    {% for report in report_list %}
+    <div class="col-md-12 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ report.data }}</h5>
+                <p><strong>業務内容：</strong>{{ report.content|linebreaksbr }}</p>
+                <p><strong>振り返り：</strong>{{ report.comment|linebreaksbr }}</p>
+                <p><strong>いいね数：</strong>{{ report.likes.count }}</p>
+                <a href="{% url 'reportapp:report_detail' report.pk %}" class="btn btn-outline-info text-black">詳細</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'reportapp:report_list' %}" class="btn btn-outline-primary">日報一覧</a>
+<a href="{% url 'reportapp:user_list' %}" class="btn btn-outline-primary">ユーザー一覧</a>
+{% endblock %}
