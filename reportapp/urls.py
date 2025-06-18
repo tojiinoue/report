@@ -20,4 +20,6 @@ urlpatterns = [
 urlpatterns += [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('comment/update/<int:pk>/', views.CommentUpdate.as_view(), name='comment_update'),
+    path('comment/delete/<int:pk>/', views.CommentDelete.as_view(), name='comment_delete'),
 ]

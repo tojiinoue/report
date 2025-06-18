@@ -9,6 +9,8 @@ from django.http import HttpResponseForbidden
 from django.db.models import Count
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.views.generic import UpdateView, DeleteView
+from django.urls import reverse
 
 
 # Create your views here.
@@ -37,12 +39,12 @@ class ReportList(LoginRequiredMixin, ListView):
             qs = qs.filter(author=author)
         
         order = self.request.GET.get('order')
-        if order == 'new':
-            qs = qs.order_by('-created_at')
+        if order == 'old':
+            qs = qs.order_by('created_at')
         elif order == 'like':
             qs = qs.annotate(like_count=Count('likes')).order_by('-like_count')
         else:
-            qs = qs.order_by('created_at')
+            qs = qs.order_by('-created_at')
 
         return qs
 
@@ -118,4 +120,19 @@ def comment_report(request, pk):
     else:
         form = ReportCommentForm()
     return render(request, 'reportapp/report_comment.html', {'form': form, 'report': report})
+
+class CommentUpdate(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'reportapp/comment_form.html'
+
+    def get_success_url(self):
+        return reverse('reportapp:report_detail', kwargs={'pk': self.object.report.pk})
+
+class CommentDelete(LoginRequiredMixin, AuthorRequiredMixin, DeleteView):
+    model = Comment
+    template_name = 'reportapp/comment_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse('reportapp:report_detail', kwargs={'pk': self.object.report.pk})
     

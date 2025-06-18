@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 style="padding-top: 15px;">コメント削除ページ</h1>
+    <div class="row">
+        <section class="post-form">
+            <div class="col-md-12 mb-2">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ comment.created_at }} - {{ comment.author }}</h5>
+                        <p><strong>コメント：</strong>{{ comment.content|linebreaksbr }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <form action="" method="post">{% csrf_token %}
+            <button type="submit" class="submit delete btn btn-outline-danger mb-2">削除</button>
+        </form>
+    </div>
+    </section>
+    <button class="btn btn-outline-primary" onclick="history.back()">戻る</button>
+{% endblock %}

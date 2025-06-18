@@ -23,6 +23,11 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ comment.created_at }} - {{ comment.author }}</h5>
                             <p><strong>コメント：</strong>{{ comment.content|linebreaksbr }}</p>
+                            {% if comment.author == user or user.is_superuser %}
+                            <a href="{% url 'reportapp:comment_update' comment.pk %}" class="btn btn-outline-info text-black">編集</a>
+                            <a href="{% url 'reportapp:comment_delete' comment.pk %}" class="btn btn-outline-danger text-black">削除</a>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
